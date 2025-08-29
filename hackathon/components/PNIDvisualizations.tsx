@@ -9,7 +9,7 @@ const COLORS = [
 
 
 
-// --------- PNID Visualization (sample only) ----------
+// --------- PNID Visualization
 const samplePNIDTableData = [
   { equipment: "Pump", count: 3 },
   { equipment: "Valve", count: 4 },
@@ -42,7 +42,7 @@ const filterRows = (rows: typeof isoData.rows, type: string, material: string) =
   );
 };
 
-// --------- Export ----------
+// --------- Export
 function exportCSV(rows: any[]) {
   const cols = Object.keys(rows[0]);
   const csv = [
@@ -99,27 +99,6 @@ const Dashboard: React.FC = () => {
               <Bar dataKey="Count" fill={COLORS[0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </section>
-
-      {/* Isometric Visualizations */}
-      <section>
-        <h2 className="text-xl font-bold mb-2">Isometric Visualizations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Bar Chart by Material */}
-          <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Materials Breakdown</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={materialBarData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#4B5563" />
-                <XAxis dataKey="material" stroke="#D1D5DB" />
-                <YAxis stroke="#D1D5DB" />
-                <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', color: '#D1D5DB' }} />
-                <Legend wrapperStyle={{ color: '#D1D5DB' }} />
-                <Bar dataKey="value" fill={COLORS[1]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
         </div>
       </section>
 

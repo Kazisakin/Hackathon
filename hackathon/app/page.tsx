@@ -15,7 +15,7 @@ export default function Page() {
       setError(null);
       
       try {
-        // First, try to fetch the PNID data separately
+        
         console.log("Fetching PNID data...");
         const pnidResponse = await fetch("/api/pnid", {
           method: "POST",

@@ -94,7 +94,7 @@ const Isometricvisualizations: React.FC = () => {
       <section>
         <h2 className="text-xl font-bold mb-2">Isometric Visualizations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Bar Chart by Material */}
+          {/* Bar Chart */}
           <div className="bg-gray-800 p-4 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2 text-gray-200">
               Materials Breakdown
@@ -116,7 +116,7 @@ const Isometricvisualizations: React.FC = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          {/* Pie Chart by Type */}
+          {/* Pie Chart*/}
           <div className="bg-gray-800 p-4 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2 text-gray-200">
               Types Breakdown
