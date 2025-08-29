@@ -1,35 +1,93 @@
-"use client"
-import { useEffect, useRef, useState } from "react"
-import Chart from "chart.js/auto"
-import PNIDvisualizations from "@/components/PNIDvisualizations"
-import Isometricvisualizations from "@/components/Isometricvisualizations"
-const BASE_URL = "https://testing.asets.io/v1" 
-const API_KEY = process.env.NEXT_PUBLIC_ASETS_API_KEY
-const ASSET_ID = "bitcoin" 
-const CURRENCY = "usd"
-const TIMEFRAME = "1d"
-const LIMIT = 60
-const INTERVAL = "10min"
-const DATA_TYPE = "price"
-const CHART_TYPE = "line"
-const CHART_COLOR = "rgba(75, 192, 192, 1)"
-const BACKGROUND_COLOR = "rgba(75, 192, 192, 0.2)"
-const BORDER_COLOR = "rgba(75, 192, 192, 1)" 
-const POINT_RADIUS = 2
-const POINT_HOVER_RADIUS = 5 
+"use client";
+import { useEffect, useState } from "react";
+import Isometricvisualizations from "../components/Isometricvisualizations";
+import PNIDvisualizations from "../components/PNIDvisualizations";
 
+export default function Page() {
+  const [isoData, setIsoData] = useState<any>(null);
+  const [pnidData, setPnidData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function Dashboard() {
- 
- 
-  
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // First, try to fetch the PNID data separately
+        console.log("Fetching PNID data...");
+        const pnidResponse = await fetch("/api/pnid", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            fileUrl: "https://testing.asets.io/docs/pnid_001.pdf" 
+          }),
+        });
+        
+        if (!pnidResponse.ok) {
+          throw new Error(`PNID API error: ${pnidResponse.status}`);
+        }
+        
+        const pnidResult = await pnidResponse.json();
+        console.log("PNID data received:", pnidResult);
+        setPnidData(pnidResult);
+        
+        // Now fetch the ISO data
+        console.log("Fetching ISO data...");
+        const isoResponse = await fetch("/api/isometric", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            fileUrl: "https://testing.asets.io/docs/iso_014.png" 
+          }),
+        });
+        
+        if (!isoResponse.ok) {
+          throw new Error(`Isometric API error: ${isoResponse.status}`);
+        }
+        
+        const isoResult = await isoResponse.json();
+        console.log("ISO data received:", isoResult);
+        setIsoData(isoResult);
+      } catch (err: any) {
+        console.error("Failed to fetch data:", err);
+        setError(err.message || "Failed to fetch data");
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchData();
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-4xl font-bold mb-8">Asets Dashboard</h1>
-      <div className="w-full max-w-4xl">
-        <PNIDvisualizations />
-        <Isometricvisualizations />
-      </div>
+    <main className="flex flex-col items-center justify-center p-8">
+      <h1 className="text-3xl font-bold mb-8">Asets Dashboard</h1>
+      
+      {loading && (
+        <div className="text-gray-400 text-xl">Loading visualizations...</div>
+      )}
+      
+      {error && (
+        <div className="text-red-500 text-xl mb-4">Error: {error}</div>
+      )}
+      
+      {!loading && !error && (
+        <div className="w-full max-w-7xl space-y-16">
+          {isoData && <Isometricvisualizations />}
+          
+          <div className="border-t-2 border-gray-700 pt-8 mt-8">
+            {pnidData ? (
+              <PNIDvisualizations />
+            ) : (
+              <div className="text-red-400">
+                No PNID data available. Check console for details.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
-  )
+  );
 }
